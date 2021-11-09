@@ -7,17 +7,22 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Movement")] 
     public float horizontalForce;
     public float verticalForce;
+
+    public Vector2 maxVelocity;
+
     public bool isGrounded;
     public Transform groundOrigin;
     public float groundRadius;
     public LayerMask groundLayerMask;
 
+    private Animator animationControler;
     private Rigidbody2D rigidbody;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        animationControler = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -43,8 +48,8 @@ public class PlayerBehaviour : MonoBehaviour
             if (x != 0)
             {
                 x = FlipAnimation(x);
-            } 
-            
+            }
+
             // Touch Input
             Vector2 worldTouch = new Vector2();
             foreach (var touch in Input.touches)
@@ -60,6 +65,23 @@ public class PlayerBehaviour : MonoBehaviour
 
             rigidbody.AddForce(new Vector2(horizontalMoveForce, jumpMoveForce) * mass);
             rigidbody.velocity *= 0.99f; // scaling / stopping hack
+
+            rigidbody.velocity = new Vector2(Mathf.Clamp(rigidbody.velocity.x, -maxVelocity.x, maxVelocity.x),
+                Mathf.Clamp(rigidbody.velocity.y, -maxVelocity.y, maxVelocity.y));
+
+            if (rigidbody.velocity.sqrMagnitude > 0.1f)
+            {
+                animationControler.SetInteger("AnimationState", (int)PlayerAnimationEnum.RUN);
+            }
+            else
+            {
+                animationControler.SetInteger("AnimationState", (int)PlayerAnimationEnum.IDLE);
+            }
+
+        }
+        else
+        {
+            animationControler.SetInteger("AnimationState", (int)PlayerAnimationEnum.JUMP);
         }
 
     }
