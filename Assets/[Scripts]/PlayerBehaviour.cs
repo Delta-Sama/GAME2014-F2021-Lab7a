@@ -11,6 +11,7 @@ public class PlayerBehaviour : MonoBehaviour
     public Vector2 maxVelocity;
     [Range(0.0f, 1.0f)] public float airMoveFactor = 0.5f;
 
+    [Header("Ground")]
     public bool isGrounded;
     public Transform groundOrigin;
     public float groundRadius;

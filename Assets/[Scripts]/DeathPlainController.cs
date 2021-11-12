@@ -10,5 +10,9 @@ public class DeathPlainController : MonoBehaviour
         {
             GameManager.Instance.ResetPlayer();
         }
+        else
+        {
+            collision.gameObject.SetActive(false);
+        }
     }
 }
