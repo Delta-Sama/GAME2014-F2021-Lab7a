@@ -79,8 +79,6 @@ public class EnemyController : MonoBehaviour
     {
         float mass = rigidBody.mass * rigidBody.gravityScale;
 
-        Debug.Log("Speed: " + Time.deltaTime);
-
         rigidBody.AddForce(new Vector2(currentDirection * speed * Time.deltaTime, 0.0f) * mass);
         rigidBody.velocity *= 0.99f;
 

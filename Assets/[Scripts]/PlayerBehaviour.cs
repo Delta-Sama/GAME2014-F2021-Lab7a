@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    [Header("Movement")] 
+    [Header("Controls")]
+    public Joystick joystick;
+
+    [Header("Movement")]
     public float horizontalForce;
     public float verticalForce;
 
@@ -36,7 +39,12 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Move()
     {
-        float x = Input.GetAxisRaw("Horizontal");
+        float x = joystick.Direction.x;
+
+    #if UNITY_EDITOR
+            x = Input.GetAxisRaw("Horizontal");
+    #endif
+
         float horizontalMoveForce = x * horizontalForce * Time.deltaTime;
 
         float mass = rigidbody.mass * rigidbody.gravityScale;
@@ -44,7 +52,6 @@ public class PlayerBehaviour : MonoBehaviour
         if (isGrounded)
         {
             // Keyboard Input
-            float y = Input.GetAxisRaw("Vertical");
             float jump = Input.GetAxisRaw("Jump");
 
             // Touch Input
@@ -54,7 +61,7 @@ public class PlayerBehaviour : MonoBehaviour
                 worldTouch = Camera.main.ScreenToWorldPoint(touch.position);
             }
 
-            float jumpMoveForce = jump * verticalForce * Time.deltaTime;
+            float jumpMoveForce = (UIController.jump ? 1 : 0) * verticalForce * Time.deltaTime;
 
             rigidbody.AddForce(new Vector2(horizontalMoveForce, jumpMoveForce) * mass);
             rigidbody.velocity *= 0.99f; // scaling / stopping hack
